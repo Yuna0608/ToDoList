@@ -1,0 +1,92 @@
+html {
+    background-color: rgb(135, 209, 185);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+h1 {
+    color: rgb(35, 104, 102);
+}
+
+.addBlock {
+    display: flex;
+    align-items: flex-end;
+    gap: 10px;
+}
+
+#addContent {
+    border: none;
+    border-bottom: 3px solid rgb(237, 209, 158);
+    background-color: rgb(135, 209, 185);
+    width: 800px;
+    height: 30px;
+}
+
+#addContent::placeholder {
+    color: gray;
+}
+
+#addContent:focus {
+    outline: none;
+    background-color: rgb(135, 209, 185);
+}
+
+#addImg {
+    width: 20px;
+    height: 20px;
+    padding: 0px;
+    margin: 0px;
+}
+
+#addImg:hover {
+}
+
+.itemsBlock {
+    border: 3px solid rgb(237, 209, 158);
+    border-radius: 10px;
+    margin: 20px 0px;
+}
+
+h3 {
+    margin: 5px 0px 5px 10px;
+    padding: 0px;
+}
+
+.itemTmpBlock {
+    display: flex;
+    background-color: rgb(195, 232, 220);
+    margin: 10px;
+    border-radius: 5px;
+    align-items: center;
+}
+
+.itemContent {
+    margin-left: 10px;
+    outline: none;
+    border: none;
+    background-color: rgb(195, 232, 220);
+    width: 100%;
+    height: 25px;
+}
+
+.itemContenBlock{
+    flex: 1;
+}
+
+.itemFunctionBlock {
+    display: flex;
+    justify-content: flex-end;
+    float: auto;
+    gap: 10px;
+}
+
+.hidden{
+    display: none;
+}
