@@ -126,6 +126,6 @@ function elementImageSet(element, orgImg, hoverImg) {
         element.src = hoverImg;
     });
     element.addEventListener("mouseleave", () => {
-        element.src = orgImg;
+        element.src = orgImg; 
     });
 }
