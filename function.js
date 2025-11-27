@@ -1,3 +1,4 @@
+const STORAGE_KEY = "todoData";
 const addOrgImg = "./images/add.png";
 const addHoverImg = "./images/addHover.png";
 const editOrgImg = "./images/edit.png";
@@ -7,10 +8,58 @@ const deleteHoverImg = "./images/deleteHover.png";
 const doneOrgImg = "./images/done.png";
 const doneHoverImg = "./images/doneHover.png";
 
-initial();
+Initial();
+LoadData();
 
+function LoadData() {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    console.log(saved);
 
-function initial() {
+    if (saved) {
+        const data = JSON.parse(saved);
+        Object.entries(data).forEach(([text, status]) => {
+            addItem(text, status);
+        });
+        console.log("load local storage is success");
+    }
+    else {
+        console.log("local storage is empty");
+    }
+}
+
+function SaveData() {
+    let data = new Object();
+
+    // scan waitBlock
+    document.querySelector("#waitBlock").querySelectorAll(".itemTmpBlock").forEach(block => {
+        let input = block.querySelector(".itemContent");
+        if (!input) return;
+
+        let text = input.value.trim();
+        if (text) {
+            data[text] = "wait";
+        }
+    });
+
+    // scan doneBlock
+    document.querySelector("#doneBlock").querySelectorAll(".itemTmpBlock").forEach(block => {
+        let input = block.querySelector(".itemContent");
+        if (!input) return;
+
+        let text = input.value.trim();
+        if (text) {
+            data[text] = "done";
+        }
+    });
+
+    console.log(data);
+
+    // save to localStage
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    console.log("save local storage is success");
+}
+
+function Initial() {
     // add
     let addImgElement = document.querySelector("#addImg");
     if (addImgElement) {
@@ -19,8 +68,9 @@ function initial() {
         // click
         addImgElement.addEventListener("click", () => {
             let ele = document.querySelector("#addContent");
-            addItem(ele.value);
+            addItem(ele.value, "wait");
             ele.value = "";
+            SaveData();
         });
     }
 
@@ -52,7 +102,8 @@ function initial() {
     let mainBlock = document.querySelector(".mainBlock");
     if (mainBlock) {
         mainBlock.addEventListener("click", function (event) {
-            console.log(event);
+            // console.log(event);
+
             // find parent itemTmpBlock
             const itemTmpBlock = event.target.closest(".itemTmpBlock");
             if (event.target.classList.contains("edit")) {
@@ -60,16 +111,20 @@ function initial() {
                 input.readOnly = false;
                 input.focus();
                 input.select();
-                // 指監聽一次，離開時所回readonly
+
+                // 只監聽一次，離開時鎖回readonly
                 const onBlur = () => {
                     input.readOnly = true;
                     input.removeEventListener("blur", onBlur);
                 };
                 input.addEventListener("blur", onBlur);
+                SaveData();
             }
             else if (event.target.classList.contains("delete")) {
-                if (itemTmpBlock)
+                if (itemTmpBlock) {
                     itemTmpBlock.remove();
+                    SaveData();
+                }
             }
             else if (event.target.classList.contains("done")) {
                 if (itemTmpBlock) {
@@ -82,21 +137,22 @@ function initial() {
                     itemTmpBlock.remove();
                     if (parentBlock.id === "waitBlock") {
                         elementImageSet(event.target, doneHoverImg, doneOrgImg);
-                        let doneBLock = document.querySelector("#doneBlock");
-                        doneBLock.appendChild(itemTmpBlock);
+                        let doneBlock = document.querySelector("#doneBlock");
+                        doneBlock.appendChild(itemTmpBlock);
                     }
                     else if (parentBlock.id === "doneBlock") {
                         elementImageSet(event.target, doneOrgImg, doneHoverImg);
                         let waitBLock = document.querySelector("#waitBlock");
                         waitBLock.appendChild(itemTmpBlock);
                     }
+                    SaveData();
                 }
             }
         });
     }
 }
 
-function addItem(text) {
+function addItem(text, status) {
     if (!text) return;
     console.log(text);
 
@@ -118,7 +174,14 @@ function addItem(text) {
     if (doneEle) {
         elementImageSet(doneEle, doneOrgImg, doneHoverImg);
     }
-    document.querySelector(".itemsBlock").appendChild(tmpClone);
+
+    if (status === "wait") {
+        document.querySelector("#waitBlock").appendChild(tmpClone);
+    }
+    else if (status === "done") {
+        editEle.classList.add("hidden");
+        document.querySelector("#doneBlock").appendChild(tmpClone);
+    }
 }
 
 function elementImageSet(element, orgImg, hoverImg) {
@@ -126,6 +189,6 @@ function elementImageSet(element, orgImg, hoverImg) {
         element.src = hoverImg;
     });
     element.addEventListener("mouseleave", () => {
-        element.src = orgImg; 
+        element.src = orgImg;
     });
 }
